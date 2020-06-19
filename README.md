@@ -1,4 +1,4 @@
-# test-trello
+# test-kanban
 
 ## Project setup
 ```
