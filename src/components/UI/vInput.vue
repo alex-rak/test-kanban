@@ -80,6 +80,7 @@ export default {
     margin-top: 5px;
     font-size: 24px;
     padding: 0 5px;
+    width: 100%;
     &.slot__append-icon {
       padding: 0 35px 0 5px;
     }
@@ -94,8 +95,8 @@ export default {
   &__error {
     transition: 0.5s;
     color: #faad8f;
-    font-size: 20px;
-    word-break: break-all;
+    font-size: 14px;
+    word-wrap: break-word;
   }
 }
 </style>

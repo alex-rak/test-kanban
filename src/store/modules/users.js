@@ -1,3 +1,5 @@
+import Axios from "axios";
+
 const state = {
   token: null,
 };
@@ -6,42 +8,29 @@ const getters = {
 };
 
 const actions = {
-  async getTokenApi({ state, commit }) {
-    if (localStorage.getItem("table-task-token")) {
-      const token = localStorage.getItem("table-task-token");
-      commit("setToken", JSON.parse(token));
-    } else {
-      await fetch("https://trello.backend.tests.nekidaem.ru/api/v1/users/login/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: "rak",
-          password: "string123",
-        }),
-      }).then(response => response.json()).then(data => {
-        commit("setToken", data);
-      });
-    }
+  USER_AUTHORIZATION(context, data) {
+    return Axios.post("https://trello.backend.tests.nekidaem.ru/api/v1/users/login/", data)
+      .then(data => data)
+      .catch(error => error.response);
   },
 
-  async registration({ state, commit }, data) {
-    await fetch("https://trello.backend.tests.nekidaem.ru/api/v1/users/create/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    }).then(response => response.json()).then(data => {
-      commit("setToken", data);
-    });
+  USER_REGISTRATION(context, data) {
+    return Axios.post("https://trello.backend.tests.nekidaem.ru/api/v1/users/create/", data)
+      .then(data => data)
+      .catch(error => error.response);
   },
 };
 
 const mutations = {
   setToken(state, token) {
-    state.token = token;
+    if (token) {
+      state.token = token;
+      window.localStorage.setItem("token", token);
+    } else {
+      if (window.localStorage.getItem("token")) {
+        state.token = window.localStorage.getItem("token");
+      }
+    }
   },
 };
 

@@ -58,7 +58,6 @@ export default {
     flex-direction: column;
     padding: 15px 15px;
     background: #646464;
-    width: 400px;
     border: 1px solid #9c9c9c;
     justify-content: space-around;
     border-radius: 10px 10px 0  0;

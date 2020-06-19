@@ -1,19 +1,16 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import store from "@/store";
 
 Vue.use(VueRouter);
 
 const routes = [
   {
     path: "/",
-    component: () => {
-      if (!store.state.token) {
-        return import(/* webpackChunkName: "Auth" */"@/pages/Auth");
-      } else {
-        return import(/* webpackChunkName: "MainPage" */"@/pages/Main");
-      }
-    },
+    component: () => import(/* webpackChunkName: "Main" */"@/pages/Main"),
+  },
+  {
+    path: "/auth",
+    component: () => import(/* webpackChunkName: "Auth" */"@/pages/Auth"),
   },
 ];
 
@@ -21,6 +18,16 @@ const router = new VueRouter({
   mode: "history",
   base: process.env.BASE_URL,
   routes,
+});
+const token = window.localStorage.getItem("token");
+router.beforeEach((to, from, next) => {
+  if (!token && to.path !== "/auth") {
+    next("/auth");
+  } else if (token && to.path === "/auth") {
+    next("/");
+  } else {
+    next();
+  }
 });
 
 export default router;

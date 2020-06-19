@@ -31,10 +31,19 @@
 
 <script>
 import TasksColumn from "@/components/TasksColumn";
+import { mapMutations } from "vuex";
 export default {
   name: "MainPage",
   components: {
     TasksColumn,
+  },
+  created() {
+    this.setToken();
+  },
+  methods: {
+    ...mapMutations("users", [
+      "setToken",
+    ]),
   },
 };
 </script>
@@ -49,7 +58,7 @@ export default {
     width: 25%;
   }
 }
-@media screen and (max-device-width: 1600px) {
+@media screen and (max-width: 1600px) {
   .main-page {
     justify-content: center;
     align-items: center;
@@ -58,7 +67,7 @@ export default {
     }
   }
 }
-@media screen and (max-device-width: 800px) {
+@media screen and (max-width: 800px) {
   .main-page {
     justify-content: center;
     align-items: center;

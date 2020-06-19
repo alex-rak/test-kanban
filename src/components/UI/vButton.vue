@@ -28,6 +28,7 @@ export default {
   height: 40px;
   width: 70%;
   min-width: fit-content;
+  padding: 0 10px;
   border-radius: 20px;
   outline: none;
   background: #7a7a7a;
