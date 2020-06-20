@@ -20,7 +20,7 @@
       </template>
     </v-input>
     <div class="buttons">
-      <v-button @click="auth">
+      <v-button>
         Войти
       </v-button>
     </div>
@@ -74,7 +74,7 @@ export default {
         this.loginErrorMessage = "";
         const response = await this.USER_AUTHORIZATION(this.user);
         if (response.data.token) {
-          window.location = "/";
+          this.$router.push("/");
         } else if (response.data.non_field_errors) {
           this.passwordErrorMessage = response.data.non_field_errors[0];
           this.password = "";

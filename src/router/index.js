@@ -8,11 +8,27 @@ const routes = [
     path: "/",
     name: "Main",
     component: () => import(/* webpackChunkName: "Main" */"@/pages/Main"),
+    beforeEnter(to, from, next) {
+      const token = window.localStorage.getItem("token");
+      if (!token) {
+        next({ name: "Auth" });
+      } else {
+        next();
+      }
+    },
   },
   {
     path: "/auth",
     name: "Auth",
     component: () => import(/* webpackChunkName: "Auth" */"@/pages/Auth"),
+    beforeEnter(to, from, next) {
+      const token = window.localStorage.getItem("token");
+      if (token) {
+        next({ name: "Main" });
+      } else {
+        next();
+      }
+    },
   },
 ];
 
@@ -20,18 +36,6 @@ const router = new VueRouter({
   mode: "history",
   base: process.env.BASE_URL,
   routes,
-});
-
-const token = window.localStorage.getItem("token");
-
-router.beforeEach((to, from, next) => {
-  if (!token && to.name !== "Auth") {
-    next({ name: "Auth" });
-  } else if (token && to.name === "Auth") {
-    next({ name: "Main" });
-  } else {
-    next();
-  }
 });
 
 export default router;

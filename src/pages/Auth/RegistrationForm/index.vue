@@ -87,7 +87,7 @@ export default {
         this.loginErrorMessage = "";
         const response = await this.USER_REGISTRATION(this.user);
         if (response.data.token) {
-          window.location = "/";
+          this.$router.push("/");
         } else {
           this.loginErrorMessage = response.data?.username ? response.data.username[0] : "";
           this.passwordErrorMessage = response.data?.password ? response.data.password[0] : "";
