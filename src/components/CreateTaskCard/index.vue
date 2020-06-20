@@ -16,7 +16,8 @@
     <textarea
       ref="textarea"
       v-model="cardTitle"
-      placeholder="Ввести заголовок для этой карточки" />
+      placeholder="Ввести заголовок для этой карточки"
+      @input="autosize" />
     <div class="buttons">
       <button @click="createCard">
         Добавить карточку
@@ -29,8 +30,15 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
 export default {
   name: "CreateTaskCard",
+  props: {
+    row: {
+      type: Number,
+      required: true,
+    },
+  },
   data() {
     return {
       visibleForm: false,
@@ -38,24 +46,35 @@ export default {
     };
   },
   methods: {
+    ...mapActions("cards", [
+      "CREATE_CARD",
+    ]),
     async toggle() {
       this.visibleForm = true;
-      await this.$nextTick();
-      const textarea = this.$refs.textarea;
-      textarea.addEventListener("keydown", this.autosize);
     },
     remove() {
-      const textarea = this.$refs.textarea;
-      textarea.removeEventListener("keydown", this.autosize);
       this.visibleForm = false;
       this.cardTitle = "";
     },
-    createCard() {
-      console.log();
+    async createCard() {
+      if (this.cardTitle.length > 0) {
+        const res = await this.CREATE_CARD({
+          row: this.row,
+          text: this.cardTitle,
+        });
+        if (res.status === 201) {
+          this.visibleForm = false;
+          this.cardTitle = "";
+        } else if (res.status === 401) {
+          window.localStorage.removeItem("token");
+          window.location = "/auth";
+          window.alert("Срок атворизации кончился, выполните вход");
+        }
+      }
     },
     autosize() {
       const el = this.$refs.textarea;
-      setTimeout(() => {
+      setImmediate(() => {
         el.style.height = "auto";
         el.style.height = el.scrollHeight + "px";
       }, 0);
@@ -85,7 +104,7 @@ export default {
   }
 }
 .create-form {
-  margin: 10px 10px;
+  margin: 10px;
   textarea {
     color: #B3B4B7;
     padding: 5px 5px;
@@ -97,7 +116,6 @@ export default {
     border: none;
     background: #515051;
     overflow: hidden;
-    transition: 0.1s;
     &::placeholder {
       color: #888888;
     }

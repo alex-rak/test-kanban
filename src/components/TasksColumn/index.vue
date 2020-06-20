@@ -6,24 +6,32 @@
       {{ title }} ({{ items.length }})
     </div>
     <div class="body">
-      <div
-        v-for="item in items"
-        :key="item.id">
-        <task-card :item="item" />
-      </div>
+      <draggable
+        v-model="cards"
+        group="tasks"
+        ghost-class="ghost"
+        :animation="300">
+        <task-card
+          v-for="item in cards"
+          :key="item.id"
+          :item="item" />
+      </draggable>
     </div>
-    <create-task-card />
+    <create-task-card :row="row" />
   </div>
 </template>
 
 <script>
 import TaskCard from "@/components/TaskCard";
 import CreateTaskCard from "@/components/CreateTaskCard";
+import Draggable from "vuedraggable";
+import { mapActions } from "vuex";
 export default {
   name: "TasksColumn",
   components: {
     TaskCard,
     CreateTaskCard,
+    Draggable,
   },
   props: {
     title: {
@@ -40,6 +48,39 @@ export default {
       type: String,
       default: "",
     },
+    row: {
+      type: Number,
+      default: 0,
+    },
+  },
+  data() {
+    return {
+    };
+  },
+  computed: {
+    cards: {
+      get() {
+        return this.items;
+      },
+      set(value) {
+        // только если исходный массив увеличился или остался равной длины
+        if (this.items.length <= value.length) {
+          value.forEach((el, i) => {
+            if (+el.row !== this.row || el.seq_num !== i) {
+              el.row = this.row;
+              el.seq_num = i;
+              this.UPDATE_CARD(el).then(res => {
+                if (res.status === 401) {
+                  window.localStorage.removeItem("token");
+                  window.location = "/auth";
+                  window.alert("Срок атворизации кончился, выполните вход");
+                }
+              });
+            }
+          });
+        }
+      },
+    },
   },
   mounted() {
     if (this.headerColor.startsWith("#")) {
@@ -53,6 +94,11 @@ export default {
       this.$refs.header.classList.add(this.headerColor);
     }
   },
+  methods: {
+    ...mapActions("cards", [
+      "UPDATE_CARD",
+    ]),
+  },
 };
 </script>
 
@@ -61,8 +107,8 @@ export default {
   width: 90%;
   min-width: 300px;
   background: #303038;
-  height: fit-content;
   margin-top: 20px;
+  display: table;
   .header {
     line-height: 30px;
     padding: 0 10px;
@@ -81,6 +127,9 @@ export default {
     &.yellow {
       background-color: #F5C852;
     }
+  }
+  .ghost {
+    opacity: 0;
   }
 }
 </style>

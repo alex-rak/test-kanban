@@ -1,36 +1,37 @@
 import Axios from "axios";
-
 const state = {
-  token: null,
+  token: window.localStorage.getItem("token") || null,
 };
 
 const getters = {
 };
 
 const actions = {
-  USER_AUTHORIZATION(context, data) {
-    return Axios.post("https://trello.backend.tests.nekidaem.ru/api/v1/users/login/", data)
+  async USER_AUTHORIZATION({ commit }, data) {
+    const res = await Axios.post("https://trello.backend.tests.nekidaem.ru/api/v1/users/login/", data)
       .then(data => data)
-      .catch(error => error.response);
+      .catch(err => err.response);
+    if (res.statusText === "OK") {
+      commit("setToken", res.data.token);
+    }
+    return res;
   },
 
-  USER_REGISTRATION(context, data) {
-    return Axios.post("https://trello.backend.tests.nekidaem.ru/api/v1/users/create/", data)
+  async USER_REGISTRATION(context, data) {
+    const res = await Axios.post("https://trello.backend.tests.nekidaem.ru/api/v1/users/create/", data)
       .then(data => data)
-      .catch(error => error.response);
+      .catch(err => err.response);
+    if (res.statusText === "OK") {
+      context.commit("setToken", res.data.token);
+    }
+    return res;
   },
 };
 
 const mutations = {
   setToken(state, token) {
-    if (token) {
-      state.token = token;
-      window.localStorage.setItem("token", token);
-    } else {
-      if (window.localStorage.getItem("token")) {
-        state.token = window.localStorage.getItem("token");
-      }
-    }
+    state.token = token;
+    window.localStorage.setItem("token", token);
   },
 };
 

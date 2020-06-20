@@ -1,16 +1,21 @@
 <template>
-  <div class="registration-form">
+  <form
+    class="registration-form"
+    @submit.prevent="registration">
     <v-input
       v-model="login"
       :error-message="loginErrorMessage"
+      placeholder="Login"
       label="Придумайте имя пользователя" />
     <v-input
       v-model="email"
+      placeholder="Email"
       label="Введите Email(Поле не обязательно)" />
     <v-input
       v-model="password"
       :type="showPassword ? 'text' : 'password'"
       :error-message="passwordErrorMessage"
+      placeholder="Password"
       label="Придумайте пароль">
       <template v-slot:append-icon>
         <img
@@ -23,11 +28,11 @@
         Зарегестрироваться
       </v-button>
     </div>
-  </div>
+  </form>
 </template>
 
 <script>
-import { mapActions, mapMutations } from "vuex";
+import { mapMutations, mapActions } from "vuex";
 export default {
   name: "RegistrationForm",
   data() {
@@ -82,11 +87,10 @@ export default {
         this.loginErrorMessage = "";
         const response = await this.USER_REGISTRATION(this.user);
         if (response.data.token) {
-          this.setToken(response.data.token);
           window.location = "/";
         } else {
-          this.loginErrorMessage = response.data?.username[0];
-          this.passwordErrorMessage = response.data?.password[0];
+          this.loginErrorMessage = response.data?.username ? response.data.username[0] : "";
+          this.passwordErrorMessage = response.data?.password ? response.data.password[0] : "";
           this.password = "";
         }
       }

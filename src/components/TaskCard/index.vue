@@ -1,24 +1,41 @@
 <template>
-  <div class="task-card">
+  <div
+    ref="task"
+    class="task-card">
     <img
       class="task-card__icon-close"
-      src="@/statics/remove-icon.svg">
+      src="@/statics/remove-icon.svg"
+      @click="remove">
     <div class="task-card__id">
       id: <span>{{ item.id }}</span>
     </div>
     <div class="task-card__title">
-      {{ item.title }}
+      {{ item.text }}
     </div>
   </div>
 </template>
 
 <script>
+import { mapActions } from "vuex";
 export default {
   name: "TaskCard",
   props: {
     item: {
       type: Object,
       required: true,
+    },
+  },
+  methods: {
+    ...mapActions("cards", [
+      "DELETE_CARD",
+    ]),
+    async remove() {
+      const res = await this.DELETE_CARD(this.item.id);
+      if (res.status === 401) {
+        window.localStorage.removeItem("token");
+        window.location = "/auth";
+        window.alert("Срок атворизации кончился, выполните вход");
+      }
     },
   },
 };
@@ -32,6 +49,9 @@ export default {
   margin: 10px 10px;
   cursor: move;
   padding: 5px 5px;
+  &.draggable {
+    opacity: 1;
+  }
   &__id {
     span {
       color: #929292

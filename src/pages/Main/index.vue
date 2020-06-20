@@ -1,49 +1,69 @@
 <template>
   <div class="main-page">
-    <div class="column">
+    <div
+      v-for="(column, i) in columns"
+      :key="i"
+      class="column">
       <tasks-column
-        title="on-hold"
-        header-color="orange"
-        :items="[{id: 1, title: 'ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss'},
-                 {id: 2, title: 'ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss'},
-                 {id: 3, title: 'ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss'}]" />
-    </div>
-    <div class="column">
-      <tasks-column
-        title="in progress"
-        header-color="blue"
-        :items="[{id: 1, title: 'ssss'}]" />
-    </div>
-    <div class="column">
-      <tasks-column
-        title="needs review"
-        header-color="yellow"
-        :items="[{id: 1, title: 'ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss'}]" />
-    </div>
-    <div class="column">
-      <tasks-column
-        title="approved"
-        header-color="green"
-        :items="[]" />
+        :title="column.title"
+        :header-color="column.color"
+        :row="i"
+        :items="getColumnItems(i)" />
     </div>
   </div>
 </template>
 
 <script>
 import TasksColumn from "@/components/TasksColumn";
-import { mapMutations } from "vuex";
+import { mapActions, mapState } from "vuex";
 export default {
   name: "MainPage",
   components: {
     TasksColumn,
   },
-  created() {
-    this.setToken();
+  data() {
+    return {
+      columns: [
+        {
+          title: "on-hold",
+          color: "orange",
+        },
+        {
+          title: "in progress",
+          color: "blue",
+        },
+        {
+          title: "needs review",
+          color: "yellow",
+        },
+        {
+          title: "approwed",
+          color: "green",
+        },
+      ],
+    };
+  },
+  computed: {
+    ...mapState("cards", [
+      "cards",
+    ]),
+  },
+  async created() {
+    const cards = await this.GET_CARDS();
+    if (cards.status === 401) {
+      window.localStorage.removeItem("token");
+      window.location = "/auth";
+      window.alert("Срок атворизации кончился, выполните вход");
+    }
+    console.log(this.cards);
   },
   methods: {
-    ...mapMutations("users", [
-      "setToken",
-    ]),
+    ...mapActions("cards", ([
+      "GET_CARDS",
+    ])),
+    getColumnItems(i) {
+      return this.cards[i + ""]?.items || [];
+    },
   },
 };
 </script>
@@ -52,6 +72,7 @@ export default {
 .main-page {
   display: flex;
   flex-wrap: wrap;
+  align-content: center;
   .column {
     display: flex;
     justify-content: center;
@@ -61,7 +82,6 @@ export default {
 @media screen and (max-width: 1600px) {
   .main-page {
     justify-content: center;
-    align-items: center;
     .column {
       width: 50%;
     }
@@ -70,7 +90,6 @@ export default {
 @media screen and (max-width: 800px) {
   .main-page {
     justify-content: center;
-    align-items: center;
     .column {
       width: 100%;
     }

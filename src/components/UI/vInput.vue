@@ -71,7 +71,6 @@ export default {
   display: flex;
   flex-direction: column;
   text-align: center;
-  width: 100%;
   font-size: 20px;
   position: relative;
   margin-bottom: 15px;
@@ -84,6 +83,11 @@ export default {
     &.slot__append-icon {
       padding: 0 35px 0 5px;
     }
+    &::placeholder {
+      font-size: 16px;
+      font-weight: normal;
+      color: #acacac;
+    }
   }
   &__append-icon {
     position: absolute;
@@ -93,7 +97,6 @@ export default {
     right: 5px;
   }
   &__error {
-    transition: 0.5s;
     color: #faad8f;
     font-size: 14px;
     word-wrap: break-word;

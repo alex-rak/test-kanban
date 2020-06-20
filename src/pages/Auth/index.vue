@@ -57,9 +57,10 @@ export default {
     display: flex;
     flex-direction: column;
     padding: 15px 15px;
+    width: 100%;
+    max-width: 500px;
     background: #646464;
     border: 1px solid #9c9c9c;
-    justify-content: space-around;
     border-radius: 10px 10px 0  0;
     border-top: 0;
     .tabs {

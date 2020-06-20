@@ -1,13 +1,17 @@
 <template>
-  <div class="login-form">
+  <form
+    class="login-form"
+    @submit.prevent="auth">
     <v-input
       v-model="login"
+      placeholder="Login"
       :error-message="loginErrorMessage"
       label="Введите имя пользователя" />
     <v-input
       v-model="password"
       :type="showPassword ? 'text' : 'password'"
       :error-message="passwordErrorMessage"
+      placeholder="Password"
       label="Введите пароль">
       <template v-slot:append-icon>
         <img
@@ -20,11 +24,11 @@
         Войти
       </v-button>
     </div>
-  </div>
+  </form>
 </template>
 
 <script>
-import { mapActions, mapMutations } from "vuex";
+import { mapActions } from "vuex";
 export default {
   name: "LoginForm",
   data() {
@@ -55,12 +59,9 @@ export default {
     },
   },
   methods: {
-    ...mapActions("users", [
+    ...mapActions("users", ([
       "USER_AUTHORIZATION",
-    ]),
-    ...mapMutations("users", [
-      "setToken",
-    ]),
+    ])),
     async auth() {
       if (!this.validLogin) {
         this.loginErrorMessage = "Логин должен состоять хотя бы из одного символа";
@@ -73,12 +74,13 @@ export default {
         this.loginErrorMessage = "";
         const response = await this.USER_AUTHORIZATION(this.user);
         if (response.data.token) {
-          this.setToken(response.data.token);
           window.location = "/";
+        } else if (response.data.non_field_errors) {
+          this.passwordErrorMessage = response.data.non_field_errors[0];
+          this.password = "";
         } else {
           this.loginErrorMessage = response.data?.username ? response.data.username[0] : "";
           this.passwordErrorMessage = response.data?.password ? response.data.password[0] : "";
-          this.passwordErrorMessage = response.data.non_field_errors ? response.data.non_field_errors[0] : "";
           this.password = "";
         }
       }
