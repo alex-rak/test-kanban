@@ -1,8 +1,9 @@
-import Axios from "axios";
+import Axios from "@/plugins/axios";
 import Vue from "vue";
 const state = {
   cards: {},
 };
+console.log(Axios.defaults.headers);
 
 const getters = {
 };
@@ -11,77 +12,54 @@ const actions = {
   /**
    * Запрос к API на получение массива карточек
    */
-  async GET_CARDS({ rootState, commit }) {
-    const res = await Axios.get("https://trello.backend.tests.nekidaem.ru/api/v1/cards/", {
-      headers: {
-        Authorization: "JWT " + rootState.users.token,
-      },
-    })
-      .then(res => res)
+  GET_CARDS({ rootState, commit }) {
+    return Axios.get("https://trello.backend.tests.nekidaem.ru/api/v1/cards/", { secured: true })
+      .then(res => {
+        commit("setCards", res.data);
+        return res;
+      })
       .catch(err => err.response);
-    if (res.statusText === "OK") {
-      commit("setCards", res.data);
-    }
-    return res;
   },
 
   /**
    * Запрос к API на создание карточки
    * @param {Object} data данные карточки
    */
-  async CREATE_CARD({ rootState, commit }, data) {
-    const res = await Axios.post("https://trello.backend.tests.nekidaem.ru/api/v1/cards/", data, {
-      headers: {
-        Authorization: "JWT " + rootState.users.token,
-      },
-    })
-      .then(res => res)
+  CREATE_CARD({ rootState, commit }, data) {
+    return Axios.post("https://trello.backend.tests.nekidaem.ru/api/v1/cards/", data, { secured: true })
+      .then(res => {
+        commit("addCard", res.data);
+        return res;
+      })
       .catch(err => err.response);
-    if (res.status === 201) {
-      commit("addCard", res.data);
-    }
-    return res;
   },
 
   /**
    * Запрос к API на удаление карточки
    * @param {Number} id данные карточки
    */
-  async UPDATE_CARD({ rootState, dispatch, commit }, data) {
+  UPDATE_CARD({ rootState, dispatch, commit }, data) {
     commit("removeCard", data.id);
     commit("updateCard", data);
-    const res = await Axios.patch("https://trello.backend.tests.nekidaem.ru/api/v1/cards/" + data.id, data, {
-      headers: {
-        Authorization: "JWT " + rootState.users.token,
-      },
-    })
+    return Axios.patch("https://trello.backend.tests.nekidaem.ru/api/v1/cards/" + data.id, data, { secured: true })
       .then(res => res)
-      .catch(err => err.response);
-    if (res.status === 200) {
-      console.log("Успешно изменена", res);
-    } else {
-      dispatch("GET_CARDS");
-    }
-    return res;
+      .catch(err => {
+        dispatch("GET_CARDS");
+        return err.response;
+      });
   },
 
   /**
    * Запрос к API на удаление карточки
    * @param {Number} id данные карточки
    */
-  async DELETE_CARD({ rootState, commit }, id) {
-    const res = await Axios.delete("https://trello.backend.tests.nekidaem.ru/api/v1/cards/" + id, {
-      headers: {
-        Authorization: "JWT " + rootState.users.token,
-      },
-    })
-      .then(res => res)
+  DELETE_CARD({ rootState, commit }, id) {
+    return Axios.delete("https://trello.backend.tests.nekidaem.ru/api/v1/cards/" + id, { secured: true })
+      .then(res => {
+        commit("removeCard", id);
+        return res;
+      })
       .catch(err => err.response);
-    if (res.status === 204) {
-      console.log("Успешно удалена", id);
-      commit("removeCard", id);
-    }
-    return res;
   },
 };
 
@@ -89,7 +67,6 @@ const mutations = {
   setCards(state, cards) {
     cards.sort((a, b) => a.seq_num - b.seq_num);
     state.cards = cards.reduce((prevVal, item) => {
-      console.log(item);
       const column = prevVal[item.row];
       if (column) {
         column.items.push(item);
@@ -103,12 +80,9 @@ const mutations = {
     }, {});
   },
   addCard(state, card) {
-    console.log(card);
     if (state.cards[card.row]) {
-      console.log("Было");
       state.cards[card.row].items.push(card);
     } else {
-      console.log("Не Было");
       Vue.set(state.cards, card.row, {
         id: card.row,
         items: [card],

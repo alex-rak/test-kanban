@@ -50,12 +50,13 @@ export default {
   },
   async created() {
     const cards = await this.GET_CARDS();
-    if (cards.status === 401) {
-      window.localStorage.removeItem("token");
-      window.location = "/auth";
-      window.alert("Срок атворизации кончился, выполните вход");
-    }
-    console.log(this.cards);
+    console.log(cards);
+
+    // if (cards.status === 401) {
+    //   window.localStorage.removeItem("token");
+    //   window.location = "/auth";
+    //   window.alert("Срок атворизации кончился, выполните вход");
+    // }
   },
   methods: {
     ...mapActions("cards", ([

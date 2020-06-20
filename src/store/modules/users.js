@@ -1,4 +1,5 @@
-import Axios from "axios";
+import Axios from "@/plugins/axios";
+
 const state = {
   token: window.localStorage.getItem("token") || null,
 };

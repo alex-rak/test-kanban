@@ -9,6 +9,7 @@
       <draggable
         v-model="cards"
         group="tasks"
+        class="list"
         ghost-class="ghost"
         :animation="300">
         <task-card
@@ -128,8 +129,15 @@ export default {
       background-color: #F5C852;
     }
   }
-  .ghost {
-    opacity: 0;
+  .body {
+    .list {
+      [draggable=true] {
+        transition: 1s;
+      }
+    }
+    .ghost {
+      opacity: 0;
+    }
   }
 }
 </style>
