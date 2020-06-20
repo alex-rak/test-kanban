@@ -8,24 +8,22 @@ const getters = {
 };
 
 const actions = {
-  async USER_AUTHORIZATION({ commit }, data) {
-    const res = await Axios.post("https://trello.backend.tests.nekidaem.ru/api/v1/users/login/", data)
-      .then(data => data)
+  USER_AUTHORIZATION({ commit, dispatch }, data) {
+    return Axios.post("https://trello.backend.tests.nekidaem.ru/api/v1/users/login/", data)
+      .then(res => {
+        commit("setToken", res.data.token);
+        return res;
+      })
       .catch(err => err.response);
-    if (res.statusText === "OK") {
-      commit("setToken", res.data.token);
-    }
-    return res;
   },
 
-  async USER_REGISTRATION(context, data) {
-    const res = await Axios.post("https://trello.backend.tests.nekidaem.ru/api/v1/users/create/", data)
-      .then(data => data)
+  USER_REGISTRATION({ commit, dispatch }, data) {
+    return Axios.post("https://trello.backend.tests.nekidaem.ru/api/v1/users/create/", data)
+      .then(res => {
+        commit("setToken", res.data.token);
+        return res;
+      })
       .catch(err => err.response);
-    if (res.statusText === "OK") {
-      context.commit("setToken", res.data.token);
-    }
-    return res;
   },
 };
 

@@ -3,7 +3,6 @@ import Vue from "vue";
 const state = {
   cards: {},
 };
-console.log(Axios.defaults.headers);
 
 const getters = {
 };
@@ -12,7 +11,7 @@ const actions = {
   /**
    * Запрос к API на получение массива карточек
    */
-  GET_CARDS({ rootState, commit }) {
+  GET_CARDS({ commit }) {
     return Axios.get("https://trello.backend.tests.nekidaem.ru/api/v1/cards/", { secured: true })
       .then(res => {
         commit("setCards", res.data);
@@ -25,7 +24,7 @@ const actions = {
    * Запрос к API на создание карточки
    * @param {Object} data данные карточки
    */
-  CREATE_CARD({ rootState, commit }, data) {
+  CREATE_CARD({ commit }, data) {
     return Axios.post("https://trello.backend.tests.nekidaem.ru/api/v1/cards/", data, { secured: true })
       .then(res => {
         commit("addCard", res.data);
@@ -38,7 +37,7 @@ const actions = {
    * Запрос к API на удаление карточки
    * @param {Number} id данные карточки
    */
-  UPDATE_CARD({ rootState, dispatch, commit }, data) {
+  UPDATE_CARD({ dispatch, commit }, data) {
     commit("removeCard", data.id);
     commit("updateCard", data);
     return Axios.patch("https://trello.backend.tests.nekidaem.ru/api/v1/cards/" + data.id, data, { secured: true })
@@ -53,7 +52,7 @@ const actions = {
    * Запрос к API на удаление карточки
    * @param {Number} id данные карточки
    */
-  DELETE_CARD({ rootState, commit }, id) {
+  DELETE_CARD({ commit }, id) {
     return Axios.delete("https://trello.backend.tests.nekidaem.ru/api/v1/cards/" + id, { secured: true })
       .then(res => {
         commit("removeCard", id);

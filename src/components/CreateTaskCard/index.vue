@@ -65,10 +65,6 @@ export default {
         if (res.status === 201) {
           this.visibleForm = false;
           this.cardTitle = "";
-        } else if (res.status === 401) {
-          window.localStorage.removeItem("token");
-          window.location = "/auth";
-          window.alert("Срок атворизации кончился, выполните вход");
         }
       }
     },

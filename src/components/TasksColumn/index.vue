@@ -70,13 +70,7 @@ export default {
             if (+el.row !== this.row || el.seq_num !== i) {
               el.row = this.row;
               el.seq_num = i;
-              this.UPDATE_CARD(el).then(res => {
-                if (res.status === 401) {
-                  window.localStorage.removeItem("token");
-                  window.location = "/auth";
-                  window.alert("Срок атворизации кончился, выполните вход");
-                }
-              });
+              this.UPDATE_CARD(el);
             }
           });
         }
@@ -112,7 +106,9 @@ export default {
   display: table;
   .header {
     line-height: 30px;
-    padding: 0 10px;
+    padding: 5px 10px;
+    font-size: 16px;
+    font-weight: 600;
     text-transform: uppercase;
     color: #ffffff;
     margin-bottom: 5px;

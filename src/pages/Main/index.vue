@@ -48,15 +48,8 @@ export default {
       "cards",
     ]),
   },
-  async created() {
-    const cards = await this.GET_CARDS();
-    console.log(cards);
-
-    // if (cards.status === 401) {
-    //   window.localStorage.removeItem("token");
-    //   window.location = "/auth";
-    //   window.alert("Срок атворизации кончился, выполните вход");
-    // }
+  created() {
+    this.GET_CARDS();
   },
   methods: {
     ...mapActions("cards", ([

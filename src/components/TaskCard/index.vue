@@ -29,13 +29,8 @@ export default {
     ...mapActions("cards", [
       "DELETE_CARD",
     ]),
-    async remove() {
-      const res = await this.DELETE_CARD(this.item.id);
-      if (res.status === 401) {
-        window.localStorage.removeItem("token");
-        window.location = "/auth";
-        window.alert("Срок атворизации кончился, выполните вход");
-      }
+    remove() {
+      this.DELETE_CARD(this.item.id);
     },
   },
 };
