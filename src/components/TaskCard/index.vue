@@ -5,7 +5,8 @@
     <img
       class="task-card__icon-close"
       src="@/statics/remove-icon.svg"
-      @click="remove">
+      @click="DELETE_CARD(item.id)"
+      @touchstart="DELETE_CARD(item.id)">
     <div class="task-card__id">
       id: <span>{{ item.id }}</span>
     </div>
@@ -29,9 +30,6 @@ export default {
     ...mapActions("cards", [
       "DELETE_CARD",
     ]),
-    remove() {
-      this.DELETE_CARD(this.item.id);
-    },
   },
 };
 </script>
@@ -61,9 +59,17 @@ export default {
   &__icon-close {
     cursor: pointer;
     position: relative;
-    height: 15px;
+    background: transparent;
+    border: none;
+    outline: none;
+    height: 1px;
     width: 15px;
+    height: 15px;
     left: calc(100% - 15px);
+    img {
+      width: 100%;
+      height: 100%;;
+    }
   }
 }
 </style>

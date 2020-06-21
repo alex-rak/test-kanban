@@ -5,8 +5,8 @@ axios.interceptors.response.use(function (response) {
 }, function (error) {
   if (error.response.status === 401) {
     window.localStorage.removeItem("token");
-    window.location = "/auth";
-    window.alert("Срок атворизации кончился, выполните вход");
+    window.location = "/#/auth/";
+    window.alert("Срок авторизации кончился, выполните вход");
   }
   return Promise.reject(error);
 });

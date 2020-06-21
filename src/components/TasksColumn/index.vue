@@ -126,13 +126,8 @@ export default {
     }
   }
   .body {
-    .list {
-      [draggable=true] {
-        transition: 1s;
-      }
-    }
     .ghost {
-      opacity: 0;
+      visibility: hidden;
     }
   }
 }

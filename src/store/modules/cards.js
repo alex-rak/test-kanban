@@ -40,7 +40,7 @@ const actions = {
   UPDATE_CARD({ dispatch, commit }, data) {
     commit("removeCard", data.id);
     commit("updateCard", data);
-    return Axios.patch("https://trello.backend.tests.nekidaem.ru/api/v1/cards/" + data.id, data, { secured: true })
+    return Axios.patch(`https://trello.backend.tests.nekidaem.ru/api/v1/cards/${data.id}/`, data, { secured: true })
       .then(res => res)
       .catch(err => {
         dispatch("GET_CARDS");
@@ -53,7 +53,7 @@ const actions = {
    * @param {Number} id данные карточки
    */
   DELETE_CARD({ commit }, id) {
-    return Axios.delete("https://trello.backend.tests.nekidaem.ru/api/v1/cards/" + id, { secured: true })
+    return Axios.delete(`https://trello.backend.tests.nekidaem.ru/api/v1/cards/${id}/`, { secured: true })
       .then(res => {
         commit("removeCard", id);
         return res;

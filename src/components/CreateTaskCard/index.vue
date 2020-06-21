@@ -10,23 +10,24 @@
       Добавить карточку
     </div>
   </div>
-  <div
+  <form
     v-else
-    class="create-form">
+    class="create-form"
+    @submit.prevent="createCard">
     <textarea
       ref="textarea"
       v-model="cardTitle"
       placeholder="Ввести заголовок для этой карточки"
       @input="autosize" />
     <div class="buttons">
-      <button @click="createCard">
+      <button>
         Добавить карточку
       </button>
       <span @click="remove">
         <img src="@/statics/remove-icon.svg">
       </span>
     </div>
-  </div>
+  </form>
 </template>
 
 <script>
